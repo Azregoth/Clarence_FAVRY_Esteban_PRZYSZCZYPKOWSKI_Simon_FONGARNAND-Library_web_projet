@@ -10,6 +10,9 @@ export function ClientList(): React.ReactElement {
   const { clients, isLoading, loadClients, createClient, deleteClient } = useClientsProvider();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [form] = Form.useForm<CreateClientModel>();
+  
+  // Nouvel état pour la barre de recherche
+  const [searchText, setSearchText] = useState<string>('');
 
   useEffect((): void => {
     loadClients();
@@ -25,6 +28,13 @@ export function ClientList(): React.ReactElement {
     }
   };
 
+  // Filtrage des clients en fonction de la barre de recherche
+  const filteredClients = clients.filter(client =>
+    `${client.firstName} ${client.lastName} ${client.email || ''}`
+      .toLowerCase()
+      .includes(searchText.toLowerCase())
+  );
+
   const columns: ColumnsType<ClientModel> = [
     {
       title: 'Photo',
@@ -32,9 +42,24 @@ export function ClientList(): React.ReactElement {
       render: (_: unknown, record: ClientModel): React.ReactElement | null =>
         record.photo ? <img src={record.photo} alt="Profil" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }} /> : null,
     },
-    { title: 'Prénom', dataIndex: 'firstName', key: 'firstName' },
-    { title: 'Nom', dataIndex: 'lastName', key: 'lastName' },
-    { title: 'Email', dataIndex: 'email', key: 'email' },
+    { 
+      title: 'Prénom', 
+      dataIndex: 'firstName', 
+      key: 'firstName',
+      sorter: (a, b) => a.firstName.localeCompare(b.firstName) // Tri de A à Z
+    },
+    { 
+      title: 'Nom', 
+      dataIndex: 'lastName', 
+      key: 'lastName',
+      sorter: (a, b) => a.lastName.localeCompare(b.lastName) // Tri de A à Z
+    },
+    { 
+      title: 'Email', 
+      dataIndex: 'email', 
+      key: 'email',
+      sorter: (a, b) => (a.email || '').localeCompare(b.email || '') // Tri avec gestion des emails vides
+    },
     {
       title: 'Actions',
       key: 'actions',
@@ -55,12 +80,22 @@ export function ClientList(): React.ReactElement {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
         <h2>Liste des Clients</h2>
-        <Button type="primary" icon={<PlusOutlined />} onClick={(): void => setIsModalOpen(true)}>
-          Nouveau Client
-        </Button>
+        <Space>
+          {/* Barre de recherche */}
+          <Input.Search 
+            placeholder="Rechercher un client..." 
+            allowClear 
+            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setSearchText(e.target.value)} 
+            style={{ width: 250 }} 
+          />
+          <Button type="primary" icon={<PlusOutlined />} onClick={(): void => setIsModalOpen(true)}>
+            Nouveau Client
+          </Button>
+        </Space>
       </div>
 
-      <Table<ClientModel> columns={columns} dataSource={clients} rowKey="id" loading={isLoading} />
+      {/* On utilise filteredClients comme source de données */}
+      <Table<ClientModel> columns={columns} dataSource={filteredClients} rowKey="id" loading={isLoading} />
 
       <Modal title="Nouveau Client" open={isModalOpen} onCancel={(): void => setIsModalOpen(false)} onOk={(): void => form.submit()}>
         <Form<CreateClientModel> form={form} layout="vertical" onFinish={handleCreate}>
