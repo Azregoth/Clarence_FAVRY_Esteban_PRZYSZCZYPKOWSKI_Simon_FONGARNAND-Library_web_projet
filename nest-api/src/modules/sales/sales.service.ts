@@ -21,4 +21,8 @@ export class SalesService {
       relations: { client: true, book: true },
     });
   }
+
+  public async remove(id: string): Promise<void> {
+    await this.saleRepository.delete(id);
+  }
 }

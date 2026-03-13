@@ -1,73 +1,35 @@
-# React + TypeScript + Vite
+# 🎨 Library Manager Pro - Interface (Front-end)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Ce projet constitue l'interface utilisateur de l'application **Library Manager Pro**. Il a été conçu avec une architecture stricte pour garantir la maintenabilité, l'évolutivité et une expérience utilisateur fluide.
 
-Currently, two official plugins are available:
+## 🛠️ Stack Technique
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* **Framework Core** : React + Vite + TypeScript
+* **UI Library** : [Ant Design (v5)](https://ant.design/) pour des composants d'interface professionnels et responsives.
+* **Routing** : `@tanstack/react-router` pour un routage 100% Type-Safe.
+* **Requêtes HTTP** : `axios`
 
-## React Compiler
+## 🏛️ Architecture (Domain-Driven Design)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Pour éviter l'éparpillement du code (fichiers de types, d'API et de composants mélangés), le projet utilise une architecture orientée domaine (DDD). 
 
-## Expanding the ESLint configuration
+Chaque entité métier (`authors/`, `books/`, `clients/`, `sales/`) possède son propre dossier isolé contenant :
+* `components/` : Les composants visuels (Listes, Modales, Détails).
+* `pages/` : Les vues principales associées aux routes.
+* `providers/` : Les Hooks personnalisés (ex: `useBookProvider`) qui encapsulent les appels Axios et la gestion des états (chargement, données, erreurs).
+* `[Domain]Model.tsx` : Les contrats d'interface TypeScript garantissant l'intégrité des données.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Installation et Lancement
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1. Installer les dépendances :
+\`\`\`bash
+npm install
+\`\`\`
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+2. Lancer le serveur de développement :
+\`\`\`bash
+npm run dev
+\`\`\`
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+L'application sera accessible sur `http://localhost:5173`.
+*Attention : Assurez-vous que l'API NestJS (`nest-api`) tourne en parallèle sur le port 3000 pour que les données s'affichent correctement.*

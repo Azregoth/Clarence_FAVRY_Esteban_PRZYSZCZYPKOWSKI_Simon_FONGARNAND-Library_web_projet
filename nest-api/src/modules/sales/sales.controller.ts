@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, Param } from '@nestjs/common';
 import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { SaleEntity } from './entities/sale.entity';
@@ -15,5 +15,10 @@ export class SalesController {
   @Get()
   public async findAll(): Promise<SaleEntity[]> {
     return this.salesService.findAll();
+  }
+
+  @Delete(':id')
+  public async remove(@Param('id') id: string): Promise<void> {
+    return this.salesService.remove(id);
   }
 }

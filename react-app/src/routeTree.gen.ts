@@ -15,7 +15,8 @@ import { Route as BooksRouteImport } from './routes/books'
 import { Route as AuthorsRouteImport } from './routes/authors'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ClientsIndexRouteImport } from './routes/clients.index'
+import { Route as SalesIndexRouteImport } from './routes/sales/index'
+import { Route as ClientsIndexRouteImport } from './routes/clients/index'
 import { Route as BooksIndexRouteImport } from './routes/books/index'
 import { Route as AuthorsIndexRouteImport } from './routes/authors/index'
 import { Route as ClientsClientIdRouteImport } from './routes/clients.$clientId'
@@ -51,6 +52,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const SalesIndexRoute = SalesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SalesRoute,
 } as any)
 const ClientsIndexRoute = ClientsIndexRouteImport.update({
   id: '/',
@@ -89,24 +95,25 @@ export interface FileRoutesByFullPath {
   '/authors': typeof AuthorsRouteWithChildren
   '/books': typeof BooksRouteWithChildren
   '/clients': typeof ClientsRouteWithChildren
-  '/sales': typeof SalesRoute
+  '/sales': typeof SalesRouteWithChildren
   '/authors/$authorId': typeof AuthorsAuthorIdRoute
   '/books/$bookId': typeof BooksBookIdRoute
   '/clients/$clientId': typeof ClientsClientIdRoute
   '/authors/': typeof AuthorsIndexRoute
   '/books/': typeof BooksIndexRoute
   '/clients/': typeof ClientsIndexRoute
+  '/sales/': typeof SalesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/sales': typeof SalesRoute
   '/authors/$authorId': typeof AuthorsAuthorIdRoute
   '/books/$bookId': typeof BooksBookIdRoute
   '/clients/$clientId': typeof ClientsClientIdRoute
   '/authors': typeof AuthorsIndexRoute
   '/books': typeof BooksIndexRoute
   '/clients': typeof ClientsIndexRoute
+  '/sales': typeof SalesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -115,13 +122,14 @@ export interface FileRoutesById {
   '/authors': typeof AuthorsRouteWithChildren
   '/books': typeof BooksRouteWithChildren
   '/clients': typeof ClientsRouteWithChildren
-  '/sales': typeof SalesRoute
+  '/sales': typeof SalesRouteWithChildren
   '/authors/$authorId': typeof AuthorsAuthorIdRoute
   '/books/$bookId': typeof BooksBookIdRoute
   '/clients/$clientId': typeof ClientsClientIdRoute
   '/authors/': typeof AuthorsIndexRoute
   '/books/': typeof BooksIndexRoute
   '/clients/': typeof ClientsIndexRoute
+  '/sales/': typeof SalesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -138,17 +146,18 @@ export interface FileRouteTypes {
     | '/authors/'
     | '/books/'
     | '/clients/'
+    | '/sales/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/sales'
     | '/authors/$authorId'
     | '/books/$bookId'
     | '/clients/$clientId'
     | '/authors'
     | '/books'
     | '/clients'
+    | '/sales'
   id:
     | '__root__'
     | '/'
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/authors/'
     | '/books/'
     | '/clients/'
+    | '/sales/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -171,7 +181,7 @@ export interface RootRouteChildren {
   AuthorsRoute: typeof AuthorsRouteWithChildren
   BooksRoute: typeof BooksRouteWithChildren
   ClientsRoute: typeof ClientsRouteWithChildren
-  SalesRoute: typeof SalesRoute
+  SalesRoute: typeof SalesRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -217,6 +227,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/sales/': {
+      id: '/sales/'
+      path: '/'
+      fullPath: '/sales/'
+      preLoaderRoute: typeof SalesIndexRouteImport
+      parentRoute: typeof SalesRoute
     }
     '/clients/': {
       id: '/clients/'
@@ -301,13 +318,23 @@ const ClientsRouteChildren: ClientsRouteChildren = {
 const ClientsRouteWithChildren =
   ClientsRoute._addFileChildren(ClientsRouteChildren)
 
+interface SalesRouteChildren {
+  SalesIndexRoute: typeof SalesIndexRoute
+}
+
+const SalesRouteChildren: SalesRouteChildren = {
+  SalesIndexRoute: SalesIndexRoute,
+}
+
+const SalesRouteWithChildren = SalesRoute._addFileChildren(SalesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AuthorsRoute: AuthorsRouteWithChildren,
   BooksRoute: BooksRouteWithChildren,
   ClientsRoute: ClientsRouteWithChildren,
-  SalesRoute: SalesRoute,
+  SalesRoute: SalesRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
