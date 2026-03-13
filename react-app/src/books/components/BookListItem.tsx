@@ -62,6 +62,10 @@ export function BookListItem({ book, onDelete, onUpdate }: BookListItemProps) {
       <Col span={9} style={{ margin: 'auto 0' }}>
         by <span style={{ fontWeight: 'bold' }}>{book.author.firstName}</span>{' '}
         <span style={{ fontWeight: 'bold' }}>{book.author.lastName}</span>
+        {/* NOUVELLE LIGNE : Affichage du nombre d'acheteurs */}
+        <div style={{ fontSize: '0.85em', color: '#666', marginTop: 4 }}>
+          {book.sales?.length || 0} acheteur(s)
+        </div>
       </Col>
       <Col
         span={3}
