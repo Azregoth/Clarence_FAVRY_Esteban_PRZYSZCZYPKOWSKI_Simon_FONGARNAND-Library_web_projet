@@ -5,8 +5,10 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 import { AuthorEntity, type AuthorId } from '../../authors/author.entity';
+import { SaleEntity } from '../../sales/entities/sale.entity';
 
 export type BookId = string & { __brand: 'Book' };
 
@@ -27,4 +29,10 @@ export class BookEntity extends BaseEntity {
   @ManyToOne(() => AuthorEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'author_id' })
   author: AuthorEntity;
+
+  @Column({ name: 'photo', type: 'varchar', nullable: true })
+  photo?: string;
+
+  @OneToMany(() => SaleEntity, (sale) => sale.book)
+  sales: SaleEntity[];
 }
