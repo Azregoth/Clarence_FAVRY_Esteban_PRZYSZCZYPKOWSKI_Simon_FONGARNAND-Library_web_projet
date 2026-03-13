@@ -1,6 +1,6 @@
-# 📚 Library Manager Pro - M1 S1 2025
+# 📚 Library Manager Pro - M1 S2 2026
 
-Bienvenue sur **Library Manager Pro**, une application web complète de gestion de bibliothèque développée dans le cadre du projet universitaire de Master 1 (Développement d'applications web).
+Bienvenue sur **Library Manager Pro**, une application web complète de gestion de bibliothèque développée dans le cadre du projet universitaire de Master 1.
 
 Ce projet met en œuvre une architecture **Domain-Driven Design (DDD)** stricte, séparant proprement le Back-end (API REST) et le Front-end (Interface Utilisateur), pour une maintenabilité et une évolutivité optimales.
 
