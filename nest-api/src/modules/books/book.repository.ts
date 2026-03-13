@@ -26,7 +26,7 @@ export class BookRepository {
     const [books, totalCount] = await this.bookRepository.findAndCount({
       take: input?.limit,
       skip: input?.offset,
-      relations: { author: true },
+      relations: ['author', 'sales', 'sales.client'],
       order: input?.sort,
     });
 
@@ -36,6 +36,7 @@ export class BookRepository {
   public async getBookById(id: string): Promise<BookModel | undefined> {
     const book = await this.bookRepository.findOne({
       where: { id: id as BookId },
+      relations: ['sales', 'sales.client'],
     });
 
     if (!book) {

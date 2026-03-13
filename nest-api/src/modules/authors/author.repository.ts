@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { AuthorModel, CreateAuthorModel } from './author.model';
-import { AuthorEntity } from './author.entity';
+import { AuthorModel, CreateAuthorModel, UpdateAuthorModel } from './author.model';
+import { AuthorEntity, AuthorId } from './author.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -11,11 +11,30 @@ export class AuthorRepository {
     private readonly authorRepository: Repository<AuthorEntity>,
   ) {}
 
-  public async getAllAuthors(): Promise<AuthorModel[]> {
-    return this.authorRepository.find();
+  public async getAllAuthors(): Promise<AuthorEntity[]> {
+    return this.authorRepository.find({
+      relations: ['books', 'books.sales'], // <-- Indispensable pour les stats (nombre de livres, moyenne)
+    });
   }
 
-  public async createAuthor(author: CreateAuthorModel): Promise<AuthorModel> {
+  public async getAuthorById(id: string): Promise<AuthorEntity | undefined> {
+    const author = await this.authorRepository.findOne({
+      where: { id: id as AuthorId },
+      relations: ['books', 'books.sales'], // <-- Pareil ici
+    });
+    return author || undefined;
+  }
+
+  public async createAuthor(author: CreateAuthorModel): Promise<AuthorEntity> {
     return this.authorRepository.save(this.authorRepository.create(author));
+  }
+
+  public async updateAuthor(id: string, data: UpdateAuthorModel): Promise<AuthorEntity | undefined> {
+    await this.authorRepository.update(id, data);
+    return this.getAuthorById(id);
+  }
+
+  public async deleteAuthor(id: string): Promise<void> {
+    await this.authorRepository.delete(id);
   }
 }
